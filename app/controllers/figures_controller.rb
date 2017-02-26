@@ -11,6 +11,11 @@ class FiguresController < ApplicationController
   post '/figures' do
     @figure = Figure.create(name: params[:figure][:name])
 
+    @figure.title_ids = params[:figure][:title_ids]
+    @figure.landmark_ids = params[:figure][:landmark_ids]
+    #Truncated version of commented out text at bottom
+    #Thanks Steven!
+
     if !params["title"]["name"].empty?
       @new_title = Title.find_or_create_by(name: params["title"]["name"])
       @figure.titles << @new_title
@@ -19,20 +24,6 @@ class FiguresController < ApplicationController
     if !params["landmark"]["name"].empty?
       @new_landmark = Landmark.find_or_create_by(name: params["landmark"]["name"], year_completed: params["landmark"]["year_completed"])
       @figure.landmarks << @new_landmark
-    end
-
-    if params["figure"]["title_ids"]
-      params["figure"]["title_ids"].each do |t|
-        @title = Title.find(t.to_i)
-        @figure.titles << @title
-      end
-    end
-
-    if params["figure"]["landmark_ids"]
-      params["figure"]["landmark_ids"].each do |l|
-        @landmark = Landmark.find(l.to_i)
-        @figure.landmarks << @landmark
-      end
     end
 
     @figure.save
@@ -53,6 +44,11 @@ class FiguresController < ApplicationController
     @figure = Figure.find(params[:id])
     @figure.update(name: params[:figure][:name])
 
+    @figure.title_ids = params[:figure][:title_ids]
+    @figure.landmark_ids = params[:figure][:landmark_ids]
+    #Truncated version of commented out text at bottom
+    #Thanks Steven!
+
     if !params["title"]["name"].empty?
       @new_title = Title.find_or_create_by(name: params["title"]["name"])
       @figure.titles << @new_title
@@ -63,21 +59,23 @@ class FiguresController < ApplicationController
       @figure.landmarks << @new_landmark
     end
 
-    if params["figure"]["title_ids"]
-      params["figure"]["title_ids"].each do |t|
-        @title = Title.find(t.to_i)
-        @figure.titles << @title
-      end
-    end
-
-    if params["figure"]["landmark_ids"]
-      params["figure"]["landmark_ids"].each do |l|
-        @landmark = Landmark.find(l.to_i)
-        @figure.landmarks << @landmark
-      end
-    end
-
     @figure.save
     redirect to "/figures/#{@figure.id}"
   end
 end
+
+# These went below the code that accounts for new titles/landmarks
+
+# if params["figure"]["title_ids"]
+#   params["figure"]["title_ids"].each do |t|
+#     @title = Title.find(t.to_i)
+#     @figure.titles << @title
+#   end
+# end
+#
+# if params["figure"]["landmark_ids"]
+#   params["figure"]["landmark_ids"].each do |l|
+#     @landmark = Landmark.find(l.to_i)
+#     @figure.landmarks << @landmark
+#   end
+# end
